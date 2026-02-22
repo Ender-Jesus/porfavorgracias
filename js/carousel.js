@@ -4,7 +4,7 @@
    ============================================================= */
 
 /** Total number of slides */
-const TOTAL = 7;
+const TOTAL = 9;
 
 /** Index of the slide currently in CENTER position */
 let current = 0;
@@ -18,14 +18,16 @@ const slides = [
     document.getElementById('slide-4'),
     document.getElementById('slide-5'),
     document.getElementById('slide-6'),
+    document.getElementById('slide-7'),
+    document.getElementById('slide-8'),
 ];
 
 /**
  * Visual positions array. 
- * For 7 slides, the order from left-to-right in a circle is:
- * center, right, hidden-right, hidden, hidden, hidden-left, left
+ * For 9 slides, the order from left-to-right in a circle is:
+ * center, right, hidden-right, hidden, hidden, hidden, hidden, hidden-left, left
  */
-let positions = ['center', 'right', 'hidden-right', 'hidden', 'hidden', 'hidden-left', 'left'];
+let positions = ['center', 'right', 'hidden-right', 'hidden', 'hidden', 'hidden', 'hidden', 'hidden-left', 'left'];
 
 /**
  * Applies the current positions[] state to the DOM by
