@@ -63,6 +63,23 @@
     pointer-events: none;
 }
 
+/* Posiciones ocultas direccionales para evitar solapamientos */
+.slide-hidden-right {
+    transform: translateX(80%) translateZ(-500px) rotateY(-50deg);
+    opacity: 0;
+    filter: blur(8px);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.slide-hidden-left {
+    transform: translateX(-80%) translateZ(-500px) rotateY(50deg);
+    opacity: 0;
+    filter: blur(8px);
+    z-index: 2;
+    pointer-events: none;
+}
+
 /* ── Slide internal shared ── */
 .slide-header-line {
     height: 4px;

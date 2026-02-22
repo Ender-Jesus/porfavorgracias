@@ -4,7 +4,7 @@
    ============================================================= */
 
 /** Total number of slides */
-const TOTAL = 3;
+const TOTAL = 6;
 
 /** Index of the slide currently in CENTER position */
 let current = 0;
@@ -14,18 +14,16 @@ const slides = [
     document.getElementById('slide-0'),
     document.getElementById('slide-1'),
     document.getElementById('slide-2'),
+    document.getElementById('slide-3'),
+    document.getElementById('slide-4'),
+    document.getElementById('slide-5'),
 ];
 
 /**
- * Visual positions array – positions[i] is the current
- * position class suffix for slides[i].
- *
- * Initial state:
- *   slide-0 → center
- *   slide-1 → right
- *   slide-2 → left
+ * Visual positions array. 
+ * Asignamos una ruta: centro -> derecha -> oculto(derecha) -> oculto(fondo) -> oculto(izquierda) -> izquierda
  */
-let positions = ['center', 'right', 'left'];
+let positions = ['center', 'right', 'hidden-right', 'hidden', 'hidden-left', 'left'];
 
 /**
  * Applies the current positions[] state to the DOM by
@@ -33,31 +31,22 @@ let positions = ['center', 'right', 'left'];
  */
 function applyPositions() {
     slides.forEach((el, i) => {
-        el.className = 'slide slide-' + positions[i];
+        // Envolvemos en un chequeo por si alguna no existe en el DOM
+        if(el) el.className = 'slide slide-' + positions[i];
     });
 }
 
 /**
- * Rotates the carousel one step.
+ * Rotates the carousel one step by shifting the array.
  * @param {number} direction  +1 = next, -1 = previous
  */
 function moveCarousel(direction) {
     if (direction === 1) {
-        // Next: center→left, right→center, left→right (circular)
-        positions = positions.map(p => {
-            if (p === 'center') return 'left';
-            if (p === 'right')  return 'center';
-            if (p === 'left')   return 'right';
-            return 'hidden';
-        });
+        // Next: Movemos el último elemento al principio del arreglo
+        positions.unshift(positions.pop());
     } else {
-        // Prev: center→right, left→center, right→left (circular)
-        positions = positions.map(p => {
-            if (p === 'center') return 'right';
-            if (p === 'left')   return 'center';
-            if (p === 'right')  return 'left';
-            return 'hidden';
-        });
+        // Prev: Movemos el primer elemento al final del arreglo
+        positions.push(positions.shift());
     }
 
     current = positions.indexOf('center');
@@ -78,7 +67,6 @@ for (let i = 0; i < TOTAL; i++) {
     dotsContainer.appendChild(btn);
 }
 
-/** Refreshes which dot is highlighted to match current center slide. */
 function updateDots() {
     dotsContainer.querySelectorAll('.dot').forEach((d, i) => {
         d.className = 'dot' + (i === current ? ' active' : '');
@@ -86,22 +74,33 @@ function updateDots() {
 }
 
 /**
- * Navigates directly to a target slide (one step at a time).
+ * Navigates directly to a target slide taking the shortest path.
  * @param {number} target  Index of the desired slide
  */
 function goToSlide(target) {
-    const targetPos = positions[target];
-    if (targetPos === 'center') return;
-    if (targetPos === 'right')  moveCarousel(1);
-    else if (targetPos === 'left') moveCarousel(-1);
+    if (positions[target] === 'center') return;
+    
+    // Calculamos si es más rápido ir por la derecha o por la izquierda
+    let diff = target - current;
+    
+    // Ajuste circular para buscar la ruta más corta
+    if (diff > TOTAL / 2) diff -= TOTAL;
+    if (diff < -TOTAL / 2) diff += TOTAL;
+
+    if (diff > 0) {
+        for(let i = 0; i < diff; i++) moveCarousel(1);
+    } else {
+        for(let i = 0; i < Math.abs(diff); i++) moveCarousel(-1);
+    }
 }
 
 /* ── Footer progress ── */
 function updateFooter() {
-    document.getElementById('footer-slide-label').textContent =
-        'Slide ' + (current + 1) + ' of ' + TOTAL;
-    document.getElementById('footer-progress').style.width =
-        Math.round(((current + 1) / TOTAL) * 100) + '%';
+    const label = document.getElementById('footer-slide-label');
+    const progress = document.getElementById('footer-progress');
+    
+    if(label) label.textContent = 'Slide ' + (current + 1) + ' of ' + TOTAL;
+    if(progress) progress.style.width = Math.round(((current + 1) / TOTAL) * 100) + '%';
 }
 
 /* ── Keyboard navigation ── */
