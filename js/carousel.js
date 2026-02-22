@@ -4,7 +4,7 @@
    ============================================================= */
 
 /** Total number of slides */
-const TOTAL = 6;
+const TOTAL = 7;
 
 /** Index of the slide currently in CENTER position */
 let current = 0;
@@ -17,13 +17,15 @@ const slides = [
     document.getElementById('slide-3'),
     document.getElementById('slide-4'),
     document.getElementById('slide-5'),
+    document.getElementById('slide-6'),
 ];
 
 /**
  * Visual positions array. 
- * Asignamos una ruta: centro -> derecha -> oculto(derecha) -> oculto(fondo) -> oculto(izquierda) -> izquierda
+ * For 7 slides, the order from left-to-right in a circle is:
+ * center, right, hidden-right, hidden, hidden, hidden-left, left
  */
-let positions = ['center', 'right', 'hidden-right', 'hidden', 'hidden-left', 'left'];
+let positions = ['center', 'right', 'hidden-right', 'hidden', 'hidden', 'hidden-left', 'left'];
 
 /**
  * Applies the current positions[] state to the DOM by
